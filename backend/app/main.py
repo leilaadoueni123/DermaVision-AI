@@ -1,6 +1,8 @@
 from fastapi import FastAPI
+from backend.app.routers.health import router as health_router
 
 app = FastAPI()
+
 
 @app.get("/")
 def home():
@@ -8,9 +10,5 @@ def home():
         "message": "Bienvenue sur DermaVision AI 🚀"
     }
 
-@app.get("/health")
-def health_check():
-    return {
-        "status": "ok",
-        "message": "DermaVision AI Backend is running"
-    }
+
+app.include_router(health_router)
