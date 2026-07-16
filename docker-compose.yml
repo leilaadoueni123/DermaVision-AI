@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:17
+    container_name: dermavision-postgres
+
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dermavision_ai
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - dermavision_data:/var/lib/postgresql/data
+
+    restart: unless-stopped
+
+volumes:
+  dermavision_data:
