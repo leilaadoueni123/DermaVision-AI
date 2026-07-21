@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.routers.auth import router as auth_router
 from app.routers.health import router as health_router
+from app.routers.users import router as users_router
 
 
 # ─── Lifespan (démarrage / arrêt) ────────────────────────────────────────────
@@ -47,3 +48,4 @@ def home():
 # ─── Enregistrement des routers ───────────────────────────────────────────────
 app.include_router(health_router, tags=["Health"])
 app.include_router(auth_router)
+app.include_router(users_router)
