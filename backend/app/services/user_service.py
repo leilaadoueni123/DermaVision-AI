@@ -3,7 +3,7 @@ from app.models.user import User
 from app.core.security import hash_password
 from app.models.user import User
 from app.schemas.user import UserUpdate
-
+from fastapi import HTTPException, status
 
 def create_user(
     db: Session,
@@ -60,3 +60,56 @@ def update_user(
     db.refresh(user)
 
     return user
+
+from app.core.security import (
+    verify_password,
+    hash_password
+)
+
+def change_password(
+    db,
+    user,
+    current_password: str,
+    new_password: str
+):
+    """
+    Change le mot de passe d'un utilisateur.
+    """
+
+    # Vérifier l'ancien mot de passe
+    if not verify_password(
+        current_password,
+        user.password_hash
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ancien mot de passe incorrect."
+        )
+
+
+    # Hasher le nouveau mot de passe
+    user.password_hash = hash_password(
+        new_password
+    )
+
+
+    # Sauvegarder
+    db.commit()
+
+    db.refresh(user)
+
+    return user
+
+
+def delete_user(
+    db: Session,
+    user: User
+):
+    """
+    Supprime un utilisateur de la base de données.
+    """
+
+    db.delete(user)
+    db.commit()
+
+    return True
