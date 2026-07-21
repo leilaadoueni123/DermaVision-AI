@@ -1,9 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.schemas.user import UserRegister, UserResponse
-from app.schemas.auth import LoginRequest, TokenResponse
+from app.schemas.auth import TokenResponse
 from app.services.user_service import create_user, get_user_by_email
 from app.services.auth_service import login_user
 
@@ -24,9 +25,12 @@ def register(
     user: UserRegister,
     db: Session = Depends(get_db)
 ):
-    """Crée un compte utilisateur. Retourne les informations du compte créé."""
-    # Vérifier si l'email est déjà utilisé
+    """
+    Crée un compte utilisateur.
+    """
+
     existing = get_user_by_email(db, user.email)
+
     if existing:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -43,23 +47,35 @@ def register(
     return new_user
 
 
+
 @router.post(
     "/login",
     response_model=TokenResponse,
     summary="Connexion et obtention du token JWT"
 )
 def login(
-    credentials: LoginRequest,
+    form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db)
 ):
-    """Authentifie un utilisateur et retourne un token JWT Bearer."""
-    token = login_user(db, credentials.email, credentials.password)
+    """
+    Authentifie un utilisateur et retourne un JWT.
+
+    username correspond à l'email utilisateur.
+    """
+
+    token = login_user(
+        db,
+        form_data.username,
+        form_data.password
+    )
 
     if not token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Email ou mot de passe incorrect.",
-            headers={"WWW-Authenticate": "Bearer"},
+            headers={
+                "WWW-Authenticate": "Bearer"
+            },
         )
 
     return token

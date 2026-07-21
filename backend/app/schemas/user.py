@@ -19,3 +19,9 @@ class UserResponse(BaseModel):
     created_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+    
+class UserUpdate(BaseModel):
+    """Données modifiables du profil utilisateur."""
+
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
