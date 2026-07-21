@@ -17,6 +17,8 @@ router = APIRouter(
 )
 
 
+
+print("Users router loaded")
 @router.get("/me")
 def get_my_profile(
     current_user: User = Depends(get_current_user)

@@ -1,0 +1,1 @@
+from app.models.skin_analysis import SkinAnalysis

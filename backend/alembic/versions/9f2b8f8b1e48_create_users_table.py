@@ -1,10 +1,3 @@
-"""create users table
-
-Revision ID: 9f2b8f8b1e48
-Revises: 
-Create Date: 2026-07-16 15:30:08.675139
-
-"""
 from typing import Sequence, Union
 
 from alembic import op
